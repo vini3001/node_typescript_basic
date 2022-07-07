@@ -1,0 +1,85 @@
+    Para acessar o site corretamente, você precisará fornecer a rota do site corretamente,
+após o localhost e a porta (exemplo:"localhost:8080/painel")
+
+FUNÇÕES DE CADA ARQUIVO:
+
+server.ts -> configuração do servidor web que importa as rotas para poder usá-las no site
+//
+index.ts/painel.ts -> configuram as rotas que serão utilizadas e as funções do site (parte lógica)
+//
+arquivos.mustache -> são a parte visual do site que interagem com as rotas
+
+MVC = Model Viewer Controller, modelo de visualização e controle
+
+                    ///
+    Métodos para adicionar dados para o banco de dados através do código:
+
+    //método build + save:
+        let searchName: string = 'a'
+        const user = User.build({
+            nome: 'João',
+            age: '20'
+        });
+        await user.save();
+    //método create:
+    const user = await User.create({
+        nome: 'Filipe',
+        age: 34
+    });
+    let users = await User.findAll({
+    //filtragens do Banco de Dados
+        attributes: ['nome', 'age'],
+        where: {
+            [Op.or]: [
+                {age: [0, 55]},
+                {nome: `%${searchName}%`}
+            ]
+        },
+        order: [
+            ['nome', 'DESC'],
+            ['age', 'ASC']
+        ]
+    });
+
+    //Como atualizar dados no banco de dados através do próprio código:
+
+    1ª forma:
+    update = User.update({nome: 'Filipe', age: 45},{
+        where: {
+            [Op.lte]:[
+                age:{
+                    [Op.lt]: 18
+                }
+            ]
+        }
+    }) //essa forma usa dois parâmetros, onde o primeiro é o que você quer substituir e o segundo é o lugar onde substituirá
+
+    2ª forma:
+        let results = await User.findAll({where: {id: 3}})
+    if (results.length > 0){
+            let resultado = results[0]
+            resultado.age = 13
+        await resultado.save()
+    } /*Essa forma especifica o dado a ser atualizado no "where" e armazena ele numa variável
+para poder ser atualizado, nesse caso, a variável "resultado"*/
+
+    //Como deletar dados no banco de dados através do próprio código:
+        1ª forma:
+    update = User.destroy({
+        where: {
+            age: 23
+        }
+    }) //Essa forma aceita somente um parâmtro, que será os valores que ele deverá excluir no banco de dados
+
+        2ª forma:
+        let results = await User.findAll({where: {id: 3}})
+    if (results.length > 0){
+        let resultado = results[0]
+    await resultado.destroy()/*Essa forma especifica o dado a ser excluído no "where" e armazena ele numa variável
+para poder ser excluído, nesse caso, a variável "resultado"*/
+
+        //funções para achar conteúdos no banco de dados
+
+    .findOrCreate ou findOrBuild //procura um valor e se não achar no banco, a função cria ele
+    .findOne //procura um valor específico, ou seja, não retorna um array
+    .findByPk //procura um valor pelo id do usuário

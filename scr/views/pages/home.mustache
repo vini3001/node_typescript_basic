@@ -1,0 +1,30 @@
+{{>partials/header}}
+
+    <h2>Produtos</h2>
+    <ul>
+    {{>partials/button}}
+{{#all}}
+    <li>
+        {{nome}} - primeira letra do nome: {{FirstLetterName}} - {{age}}
+    </li>
+{{/all}}
+    <hr/>
+        {{#products}} <!-- O mustache entende essa linha como um array -->
+            <li>{{title}} - R$ {{price}}</li>
+        {{/products}}
+    <hr/>
+        Produtos mais caros
+        {{#expensive}}
+            <li>{{title}} - R$ {{price}}</li>
+        {{/expensive}}
+        <hr/>
+        {{#frasesMotivacao}}
+            <li>{{.}}</li>
+        {{/frasesMotivacao}}
+        {{^frasesMotivacao}}
+            Não há frases motivacionais hoje
+        {{/frasesMotivacao}}
+        <hr/>
+    </ul>
+    </body>
+</html>
